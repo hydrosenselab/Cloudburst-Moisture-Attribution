@@ -6,6 +6,20 @@ Code for the study *Land evaporation fuels Himalayan cloudbursts*. It traces the
 
 <p align="center"><img width="700" alt="Moisture-source attribution flowchart" src="methodology.png" /></p>
 
+Each trajectory is followed hour by hour from 120 h before arrival to the cloudburst site. A gain in humidity is an uptake, classed by where it happened; a loss is rain-out, which removes moisture from every earlier uptake in proportion. What survives to arrival gives each source's share.
+
+| Symbol | Meaning |
+|---|---|
+| *t* | Hours relative to arrival, from −120 to 0 |
+| *q*<sub>*t*</sub> | Specific humidity of the air parcel at hour *t* (g kg<sup>−1</sup>), from HYSPLIT |
+| Δ*q*<sub>*t*</sub> | Hourly change in humidity: > 0 is an uptake, < 0 is rain-out |
+| *h*<sub>*t*</sub> | Parcel height above ground (m) |
+| MLD<sub>*t*</sub> | Mixed-layer depth from HYSPLIT, taken as the top of the boundary layer (BL) |
+| LSM | ERA5 land-sea mask: land fraction of the 0.25° cell under the uptake |
+| *f*<sub>*t*</sub> | Fraction of humidity kept during rain-out; earlier uptakes and *q*<sub>−120</sub> are multiplied by it |
+| *q*<sub>−120</sub> | Humidity 120 h before arrival (pre-existing moisture) |
+| *q*<sub>0</sub> | Humidity on arrival at the site |
+
 ## Repository contents
 
 | File or folder | What it does |
