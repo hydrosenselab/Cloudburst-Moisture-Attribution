@@ -3,8 +3,7 @@ cloudbursts.imerg
 
 Readers for IMERG Final Run V07 half-hourly HDF5 files.
 
-IMERG stores precipitation as ``Grid/precipitation[time, lon, lat]`` in mm/h.
-Negative values are fill values and are converted to NaN here.
+IMERG stores precipitation as [time, lon, lat] in mm/h.
 """
 
 from __future__ import annotations
