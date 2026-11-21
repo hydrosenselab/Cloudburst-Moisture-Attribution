@@ -47,6 +47,9 @@ Kaushal, A., Saharia, M. & Rajagopalan, B. Land evaporation fuels Himalayan clou
 
 Code by Anandita Kaushal, Department of Civil Engineering, IIT Delhi. Released under the MIT licence.
 
-<img width="3337" height="3305" alt="Lab HydroSense Logo" src="https://github.com/user-attachments/assets/3ff0f011-5f10-4823-b37a-b89f98cbac3c" />
-<img width="800" height="800" alt="IIT delhi logo" src="https://github.com/user-attachments/assets/81192090-f330-49bf-989f-92120a348023" />
+<p>
+  <img height="80" alt="HydroSense Lab logo" src="https://github.com/user-attachments/assets/3ff0f011-5f10-4823-b37a-b89f98cbac3c" />
+  &nbsp;&nbsp;
+  <img height="80" alt="IIT Delhi logo" src="https://github.com/user-attachments/assets/81192090-f330-49bf-989f-92120a348023" />
+</p>
 
