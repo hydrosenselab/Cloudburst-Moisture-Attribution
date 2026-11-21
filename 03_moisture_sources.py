@@ -40,13 +40,9 @@ def save_mean_trajectory(ev, height, ages, lats, lons):
 
 def main():
     p = base_parser("HYSPLIT moisture-source attribution")
-    p.add_argument("--no-mask", action="store_true",
-                   help="Skip the land-sea mask (all BL uptake counted as land; old behaviour)")
     args = p.parse_args()
 
-    is_land = None
-    if not args.no_mask:
-        is_land = hysplit.make_land_lookup(config.LSM_FILE, config.LAND_FRACTION_THRESHOLD)
+    is_land = hysplit.make_land_lookup(config.LSM_FILE, config.LAND_FRACTION_THRESHOLD)
 
     rows = []
     for ev in selected_events(args):
@@ -64,7 +60,7 @@ def main():
                   f"(sum {att.closure:.1f} %, n = {att.n_traj})")
             rows.append({"event": ev.number, "key": ev.key, "height_m": h,
                          "land_pct": round(att.land, 2), "ocean_pct": round(att.ocean, 2),
-                         "ft_pct": round(att.ft, 2), "nonland_pct": round(att.nonland, 2),
+                         "ft_pct": round(att.ft, 2),
                          "unattributed_pct": round(att.unattributed, 2),
                          "closure_pct": round(att.closure, 2), "n_traj": att.n_traj})
 
