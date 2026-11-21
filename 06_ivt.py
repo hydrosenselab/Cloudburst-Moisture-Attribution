@@ -1,7 +1,7 @@
 """
 Integrated water-vapour transport (IVT)
 
-Daily IVT from hourly ERA5 q, u, v (Methods, eqs 8a-b):
+Daily IVT from hourly ERA5 q, u, v:
 
     Q_u = (1/g) integral_{300}^{1000 hPa} q u dp      (trapezoidal rule)
     IVT_d = sqrt(Q_u,d^2 + Q_v,d^2)   with Q_*,d the daily-mean components

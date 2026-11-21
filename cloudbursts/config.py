@@ -53,7 +53,7 @@ class Event:
     imerg_end: str
     day0: str                # UTC day of the native IMERG peak
     era5_prefix: str         # prefix of the ERA5 GRIB files, e.g. "Ked2013"
-    site: str                # site name used in the paper
+    site: str                # site name
     start_hour: int          # HYSPLIT start hour on Day 0, UTC (hour 0 of the analysis)
     tier: int                # daily rainfall vs district percentiles: 1 > 99.99th, 2 between, 3 < 99.90th
     tdump_stem: str          # tdump file name before "_tdump", e.g. "Ked2013"

@@ -1,10 +1,6 @@
 """
-cloudbursts.regrid
-
 First-order conservative remapping of IMERG (0.1 deg) to the ERA5 grid
- (0.25 deg cells centred on ERA5 points, bounds at +/-0.125 deg).
-
-Equations (Methods, eqs 1-2)::
+(0.25 deg cells centred on ERA5 points):
 
     P_C = sum_k A_kC P_k / sum_k A_kC
     A_kC = d_lambda_kC * d_phi_kC * cos(phi_k)
