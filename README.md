@@ -54,8 +54,7 @@ Results are written to `outputs/`. `07_moisture_statistics.py` runs straight awa
 
 - IMERG Final Run V07: [NASA GES DISC](https://doi.org/10.5067/GPM/IMERG/3B-HH/07)
 - ERA5 hourly data on [pressure levels](https://doi.org/10.24381/cds.bd0915c6) and [single levels](https://doi.org/10.24381/cds.adbb2d47)
-- ILDAS soil moisture: Magotra et al. (2024), *Journal of Hydrology*, 629, 130604
-- District rainfall percentiles: Peringiyil & Saharia (2026), *International Journal of Climatology*
+- ILDAS soil moisture: [Water Cycle Atlas of India (WCAI) v1.0](https://zenodo-rdm.web.cern.ch/records/11399546) (Magotra et al., 2024, *Journal of Hydrology*, 629, 130604)
 
 ## Cite as
 
