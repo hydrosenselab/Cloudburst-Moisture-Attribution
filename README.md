@@ -1,4 +1,4 @@
-# Cloudburst Moisture Attribution
+# Moisture sources of Indo-Himalayan cloudbursts
 
 Code for the study *Land evaporation fuels Himalayan cloudbursts*. It traces the air that fed ten Indo-Himalayan cloudbursts (1998−2024) back for 120 h with HYSPLIT ensembles started at the hour of peak IMERG rainfall. Each moisture gain along the way is attributed to land evaporation, ocean evaporation, the free troposphere or moisture already present. The code also relates the land contribution to the time air spends over land and to antecedent soil moisture, and describes the convective environment around the peak.
 
