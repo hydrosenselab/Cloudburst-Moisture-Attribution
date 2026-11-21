@@ -2,7 +2,7 @@
 ILDAS soil moisture anomalies
 
 Daily 0-10 cm volumetric soil moisture anomalies (m3/m3) relative to the
-1991-2024 day-of-year climatology, for Day -2 to Day 0 of every event.
+1991-2024 day-of-year climatology, for Day -5 to Day 0 of every event.
 
 Unit conversion: theta = S / (rho_w * dz) with
 rho_w = 1000 kg m-3 and dz = 0.1 m, i.e. theta = S / 100 for S in kg m-2.
@@ -79,8 +79,7 @@ def load_ildas():
 
 def main():
     p = base_parser("ILDAS soil moisture anomalies")
-    p.add_argument("--days-before", type=int, default=2,
-                   help="Days before Day 0 to include (5 for 08_contact_time.py)")
+    p.add_argument("--days-before", type=int, default=5, help="Days before Day 0 to include")
     args = p.parse_args()
     import xarray as xr
 

@@ -46,7 +46,7 @@ pip install -r requirements.txt
 
 1. Set the data folders in `cloudbursts/config.py`.
 2. Run `01` and `02`, then run HYSPLIT from the start cells and hours that `02` writes (27-member ensembles at 100, 300 and 500 m, 120 h backward, ERA5).
-3. Run `03` to `09` in order. Run `04` with `--days-before 5` before `08`.
+3. Run `03` to `09` in order.
 
 Results are written to `outputs/`. `07_moisture_statistics.py` runs straight away on the tables in `data/`.
 

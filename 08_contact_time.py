@@ -15,7 +15,7 @@ the leave-one-out range of rho, and partial rank correlations.
 
 Inputs
     tdump files and land-sea mask (config); outputs/04_sm_anomalies/<event>.nc from
-    04_soil_moisture_anomaly.py run with --days-before 5
+    04_soil_moisture_anomaly.py
 
 Outputs
     outputs/08_contact_time.csv, outputs/08_contact_time_statistics.csv
