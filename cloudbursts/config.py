@@ -1,57 +1,29 @@
 """
-cloudbursts.config
+Event list, data paths and constants used by every script.
 
-Single source of truth for event definitions, data paths and constants.
-
-Every numbered script imports from here. To change an event window,
-a coordinate or a file location, edit this file only.
-
-Data location
-All raw data paths are built from two roots, which can be overridden with
-environment variables instead of editing code:
-
-* ``CLOUDBURST_DATA_ROOT``    raw inputs   (default: E:/001- MS(R) Data Inventory)
-* ``CLOUDBURST_RESULTS_ROOT`` outputs      (default: E:/002 - MS(R) Work Results)
-
-Example (Windows PowerShell)::
-
-    $env:CLOUDBURST_DATA_ROOT = "D:/MSR_Data"
-
-Conventions
-* All times are UTC unless a variable name says ``ist``.
-* ``day0`` is the UTC calendar day of the native 0.1 deg IMERG peak hour.
-  Day -1 and Day -2 are the two preceding days.
-* Coordinates are (latitude, longitude) in decimal degrees.
+Set DATA_ROOT to the folder holding the input data. Times are UTC; Day 0 is the
+UTC day of the native IMERG peak; coordinates are (latitude, longitude).
 """
 
 from __future__ import annotations
 
-import os
 from dataclasses import dataclass
 from pathlib import Path
 
-# Root directories
-DATA_ROOT = Path(os.environ.get("CLOUDBURST_DATA_ROOT", "E:/001- MS(R) Data Inventory"))
-RESULTS_ROOT = Path(os.environ.get("CLOUDBURST_RESULTS_ROOT", "E:/002 - MS(R) Work Results"))
+DATA_ROOT = Path("path/to/data")      # folder with the input data
+INTERMEDIATE_DIR = Path("outputs")    # results written by the scripts
 
-# Intermediate files written by one script and read by the next
-# (JSON, CSV, NetCDF). Kept inside the repo folder by default and git-ignored.
-INTERMEDIATE_DIR = Path(os.environ.get("CLOUDBURST_INTERMEDIATE_DIR", "outputs"))
-
-# Dataset locations (relative to DATA_ROOT)
+# Input data inside DATA_ROOT
 IMERG_DIR = DATA_ROOT / "IMERG Precipitation (10 main events)"
 HYSPLIT_DIR = DATA_ROOT / "HYSPLIT_Data_Trajectories"
 ILDAS_DIR = DATA_ROOT / "ILDAS Input Data"
 MSLP_DIR = DATA_ROOT / "ERA5 MSLP (1991-2024)"
 IVT_DIR = DATA_ROOT / "Event Specific IVT"
 
-# ERA5 land-sea mask (single levels, variable `lsm`, any one date, 0.25 deg).
-# Separates terrestrial from oceanic boundary-layer uptake.
+# ERA5 land-sea mask (variable lsm, 0.25 deg)
 LSM_FILE = DATA_ROOT / "ERA5 Land-Sea Mask" / "era5_lsm.nc"
 
-# Optional ILDAS land-cover / water-body mask (1 = keep, 0 or NaN = drop).
-# Use it to remove isolated glacier and lake pixels from soil moisture maps.
-# Leave as None to disable.
+# Optional ILDAS mask (1 = keep); None to disable
 ILDAS_MASK_FILE: Path | None = None
 
 # Analysis constants
@@ -70,7 +42,7 @@ PRESSURE_LEVELS_HPA = [200, 225, 250, 300, 350, 400, 450, 500, 550, 600, 650,
 # Event table
 @dataclass(frozen=True)
 class Event:
-    """One cloudburst event and every file name that differs between events."""
+    """One cloudburst event and its file names."""
 
     number: int
     key: str                 # folder-style name, e.g. "Kedarnath_2013"
@@ -86,7 +58,6 @@ class Event:
     tier: int                # daily rainfall vs district percentiles: 1 > 99.99th, 2 between, 3 < 99.90th
     tdump_stem: str          # tdump file name before "_tdump", e.g. "Ked2013"
 
-    # derived paths
     @property
     def imerg_dir(self) -> Path:
         return IMERG_DIR / self.key
@@ -119,9 +90,8 @@ def _ev(number, key, state, target, start, end, day0, era5_prefix, site, start_h
                  start_hour, tier, tdump_stem or short)
 
 
-# Search windows: reported dates extended by up to 3 days before and 1 day
-# after. Day 0 = UTC date of the native 0.1 deg IMERG peak. Leh starts at
-# 19 UTC, one hour after its native IMERG maximum.
+# IMERG search window: reported dates -3 to +1 day. Leh starts at 19 UTC, one
+# hour after its native IMERG maximum.
 EVENTS: list[Event] = [
     _ev(1, "Ukhimath_1998", "Uttarakhand", (30.55, 79.21),
         "1998-08-11", "1998-08-19", "1998-08-15", "Ukhimath1998",
