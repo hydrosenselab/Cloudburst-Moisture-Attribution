@@ -1,23 +1,11 @@
 """
-cloudbursts.hysplit
+HYSPLIT trajectory reading, moisture-source attribution and mean trajectories.
 
-HYSPLIT tdump parsing, Lagrangian moisture-source attribution and
- ensemble-mean trajectories.
-
-Attribution (Methods, eqs 4-7), adapted from Sodemann et al. (2008):
-
-1. Walk each trajectory forward in time, from origin (-120 h) to arrival.
-2. dq > 0  -> uptake. Boundary layer (BL) if z <= mixed-layer depth, else
-   free troposphere (FT). BL uptakes are further split into LAND or OCEAN
-   with the ERA5 land-sea mask at the nearest 0.25 deg point.
-3. dq < 0  -> precipitation loss, removed in proportion from every earlier
-   uptake AND from the moisture present at the origin.
-4. Each surviving contribution is divided by the arrival humidity, so
-   land + ocean + FT + unattributed = 100 % for every trajectory.
-
-Reported fractions (paper): F_L (land BL), F_N = ocean BL + FT (non-land),
-F_0 (unattributed / pre-existing). The ocean and FT parts are also returned
-separately.
+Each trajectory is followed from -120 h to arrival. A humidity gain is an uptake:
+boundary layer (BL) if the parcel is below the mixed-layer depth, otherwise free
+troposphere (FT); BL uptakes are land or ocean by the ERA5 land-sea mask. A loss
+is rain-out, removed in proportion from earlier uptakes and the initial moisture.
+Surviving amounts divided by the arrival humidity sum to 100%.
 """
 
 from __future__ import annotations
@@ -112,21 +100,16 @@ def make_land_lookup(lsm_file: str | Path, threshold: float = 0.5) -> LandLookup
 class Attribution:
     """Ensemble-mean source fractions (%) and per-grid-cell source maps."""
 
-    land: float          # F_L  terrestrial BL
-    ocean: float         # oceanic BL
+    land: float          # land BL
+    ocean: float         # ocean BL
     ft: float            # free troposphere
-    unattributed: float  # F_0  moisture present at the trajectory origin
+    unattributed: float  # moisture present at -120 h
     n_traj: int
     maps: dict[str, dict[tuple[float, float], float]]
 
     @property
-    def nonland(self) -> float:
-        """F_N = oceanic BL + FT (the 'non-land' fraction used in the paper)."""
-        return self.ocean + self.ft
-
-    @property
     def closure(self) -> float:
-        """Should equal 100 %."""
+        """Should equal 100%."""
         return self.land + self.ocean + self.ft + self.unattributed
 
 
@@ -138,13 +121,10 @@ def _grid_key(lat: float, lon: float) -> tuple[float, float]:
 def attribute_moisture(trajectories: dict, diag_names: list[str],
                        is_land: LandLookup | None = None) -> Attribution:
     """
-    Lagrangian moisture-source attribution for an ensemble of trajectories.
+    Moisture-source fractions for an ensemble of trajectories.
 
-    Parameters
-    trajectories, diag_names : output of :func:`parse_tdump`. The tdump must
-        contain SPCHUMID (g/kg) and MIXDEPTH (m AGL) diagnostics.
-    is_land : callable(lat, lon) -> bool, optional. If None, every BL uptake
-        is counted as land (reproduces the old, unmasked behaviour).
+    The tdump must contain SPCHUMID (g/kg) and MIXDEPTH (m AGL). is_land(lat, lon)
+    separates land from ocean.
     """
     if "SPCHUMID" not in diag_names or "MIXDEPTH" not in diag_names:
         raise ValueError("tdump needs SPCHUMID and MIXDEPTH diagnostics")
