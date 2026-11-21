@@ -20,10 +20,9 @@ Outputs (outputs/09_convective/)
     medians_divergence_sigma.csv, medians_omega_sigma.csv
 
 Run
-    python 09_convective_environment.py            (add --rebuild to reread the GRIB and IMERG files)
+    python 09_convective_environment.py
 """
 
-import argparse
 import warnings
 from datetime import date, timedelta
 from pathlib import Path
@@ -41,8 +40,6 @@ SITE = {n: ev.site for n, ev in EVENTS.items()}
 TIER = {n: ev.tier for n, ev in EVENTS.items()}
 
 OUT_DIR = config.INTERMEDIATE_DIR / "09_convective"
-CACHE_FILE = OUT_DIR / "era5_cache.npz"
-IMERG_CACHE = OUT_DIR / "imerg_hourly.json"
 
 expected_levels = config.PRESSURE_LEVELS_HPA
 expected_times = [h * 100 for h in range(24)]
@@ -56,7 +53,6 @@ NEAR_PEAK = 3                             # h: window for the strongest low-leve
 LAT_REL = np.round(np.arange(-2.0, 2.0001, 0.25), 2)  # deg from the site, along its longitude
 SIGMA = np.round(np.arange(0.35, 1.0001, 0.01), 2)    # pressure / surface pressure
 N_PERM = 100_000
-CACHE_VARS = ("w", "div", "cape", "sp", "w500lat")
 K_NEIGHBORS = config.K_NEIGHBORS
 
 
@@ -154,20 +150,12 @@ def read_event(key):
     return {"w": w_arr, "div": div_arr, "cape": cape, "sp": sp, "w500lat": w500_lat}
 
 
-def load_all(rebuild=False):
-    """Per-event arrays, from the cache if it exists."""
-    if CACHE_FILE.exists() and not rebuild:
-        z = np.load(CACHE_FILE)
-        if "w500lat_1" in z.files:
-            return {n: {v: z[f"{v}_{n}"] for v in CACHE_VARS}
-                    for n in sorted({int(k.rsplit("_", 1)[1]) for k in z.files})}
-        print("Cache has no latitude-time omega; rereading the GRIB files.")
+def load_all():
+    """Per-event ERA5 arrays."""
     env = {}
     for n in EVENTS:
         print(f"Reading ERA5, event {n} ...")
         env[n] = read_event(n)
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
-    np.savez_compressed(CACHE_FILE, **{f"{v}_{n}": a[v] for n, a in env.items() for v in a})
     return env
 
 
@@ -232,12 +220,8 @@ def imerg_event(key):
     return series, peak
 
 
-def imerg_hourly(rebuild=False):
-    """{event_number: 48 hourly rates (mm h-1), Day -1 00 UTC ... Day 0 23 UTC} at the peak cell.
-    Read once from the HDF5 files, then from IMERG_CACHE."""
-    import json
-    if IMERG_CACHE.exists() and not rebuild:
-        return {int(k): v for k, v in json.loads(IMERG_CACHE.read_text()).items()}
+def imerg_hourly():
+    """{event_number: 48 hourly rates (mm h-1), Day -1 00 UTC ... Day 0 23 UTC} at the peak cell."""
     out = {}
     for n, ev in EVENTS.items():
         try:
@@ -250,9 +234,6 @@ def imerg_hourly(rebuild=False):
         flag = "" if peak["time"] == expected else f"   [!] expected {expected}"
         print(f"  IMERG event {n}: peak {peak['rate']:.2f} mm/h at {peak['time']} "
               f"({peak['lat']:.2f} N, {peak['lon']:.2f} E){flag}")
-    if out:
-        OUT_DIR.mkdir(parents=True, exist_ok=True)
-        IMERG_CACHE.write_text(json.dumps(out))
     return out or None
 
 
@@ -342,9 +323,9 @@ def event_metrics(env, imerg=None):
 
 
 # Numbers and medians
-def compute(rebuild=False):
-    env = load_all(rebuild)
-    imerg = imerg_hourly(rebuild)
+def compute():
+    env = load_all()
+    imerg = imerg_hourly()
     m = event_metrics(env, imerg)
     pd.set_option("display.width", 220)
     print("\n--- PER-EVENT VALUES (divergence x 1e-5 s-1, omega Pa s-1, CAPE J kg-1, rate mm h-1) ---")
@@ -403,6 +384,4 @@ def compute(rebuild=False):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Convective environment around peak rainfall")
-    parser.add_argument("--rebuild", action="store_true", help="Reread the ERA5 and IMERG files")
-    compute(parser.parse_args().rebuild)
+    compute()

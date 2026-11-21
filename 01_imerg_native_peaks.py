@@ -20,7 +20,6 @@ from collections import defaultdict
 import numpy as np
 
 from cloudbursts import config, imerg
-from cloudbursts.cli import base_parser, selected_events
 
 OUT_FILE = config.INTERMEDIATE_DIR / "01_native_peaks.json"
 
@@ -78,10 +77,9 @@ def process_event(ev):
 
 
 def main():
-    args = base_parser("IMERG native-grid peaks").parse_args()
     config.ensure_dir(config.INTERMEDIATE_DIR)
     results = json.loads(OUT_FILE.read_text()) if OUT_FILE.exists() else {}
-    for ev in selected_events(args):
+    for ev in config.EVENTS:
         print(f"\nEvent {ev.number}: {ev.key}  ({config.K_NEIGHBORS} nearest cells to "
               f"{ev.target[0]} N, {ev.target[1]} E)")
         res = process_event(ev)

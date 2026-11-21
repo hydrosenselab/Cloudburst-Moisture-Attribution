@@ -22,7 +22,6 @@ import warnings
 import numpy as np
 
 from cloudbursts import config
-from cloudbursts.cli import base_parser, selected_events
 
 warnings.filterwarnings("ignore")
 OUT_DIR = config.INTERMEDIATE_DIR / "06_ivt"
@@ -43,9 +42,8 @@ def compute_ivt(path):
 
 
 def main():
-    args = base_parser("ERA5 IVT").parse_args()
     config.ensure_dir(OUT_DIR)
-    for ev in selected_events(args):
+    for ev in config.EVENTS:
         if not ev.ivt_grib.exists():
             print(f"Event {ev.number}: missing {ev.ivt_grib}")
             continue

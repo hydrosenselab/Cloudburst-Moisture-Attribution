@@ -17,7 +17,6 @@ import warnings
 import pandas as pd
 
 from cloudbursts import anomaly, config
-from cloudbursts.cli import base_parser, selected_events
 
 warnings.filterwarnings("ignore")
 OUT_DIR = config.INTERMEDIATE_DIR / "05_mslp_anomalies"
@@ -31,7 +30,6 @@ def crop(ds):
 
 
 def main():
-    args = base_parser("ERA5 MSLP anomalies").parse_args()
     import xarray as xr
 
     files = [config.MSLP_DIR / f"msl_pressure_{y}.grib" for y in range(1991, 2021)]
@@ -49,7 +47,7 @@ def main():
     msl = ds.drop_duplicates(dim="time").sortby("time")["msl"] / 100.0   # Pa -> hPa
 
     config.ensure_dir(OUT_DIR)
-    for ev in selected_events(args):
+    for ev in config.EVENTS:
         d0 = pd.Timestamp(ev.day0)
         start = (d0 - pd.Timedelta(days=2)).strftime("%Y-%m-%d")
         print(f"Event {ev.number}: {ev.key} ({start} to {ev.day0})")

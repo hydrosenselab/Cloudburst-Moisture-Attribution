@@ -23,7 +23,6 @@ Outputs
 import csv
 
 from cloudbursts import config, hysplit
-from cloudbursts.cli import base_parser, selected_events
 
 OUT_CSV = config.INTERMEDIATE_DIR / "03_moisture_fractions.csv"
 TRAJ_DIR = config.INTERMEDIATE_DIR / "03_mean_trajectories"
@@ -39,13 +38,11 @@ def save_mean_trajectory(ev, height, ages, lats, lons):
 
 
 def main():
-    p = base_parser("HYSPLIT moisture-source attribution")
-    args = p.parse_args()
 
     is_land = hysplit.make_land_lookup(config.LSM_FILE, config.LAND_FRACTION_THRESHOLD)
 
     rows = []
-    for ev in selected_events(args):
+    for ev in config.EVENTS:
         for h in config.START_HEIGHTS_M:
             path = ev.tdump(h)
             if not path.exists():

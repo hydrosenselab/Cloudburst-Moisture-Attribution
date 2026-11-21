@@ -28,7 +28,6 @@ from datetime import datetime
 import numpy as np
 
 from cloudbursts import config, imerg, regrid
-from cloudbursts.cli import base_parser, selected_events
 
 IN_FILE = config.INTERMEDIATE_DIR / "01_native_peaks.json"
 OUT_CSV = config.INTERMEDIATE_DIR / "02_hysplit_start.csv"
@@ -112,10 +111,9 @@ def process_event(ev, native):
 
 
 def main():
-    args = base_parser("Regrid IMERG and define HYSPLIT start cells").parse_args()
     native_all = json.loads(IN_FILE.read_text())
     rows, tops = [], {}
-    for ev in selected_events(args):
+    for ev in config.EVENTS:
         print(f"\nEvent {ev.number}: {ev.key}")
         if ev.key not in native_all:
             print("  Not in 01_native_peaks.json; run script 01 first")

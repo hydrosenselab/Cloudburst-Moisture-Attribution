@@ -22,10 +22,10 @@ import warnings
 import pandas as pd
 
 from cloudbursts import anomaly, config
-from cloudbursts.cli import base_parser, selected_events
 
 warnings.filterwarnings("ignore")
 OUT_DIR = config.INTERMEDIATE_DIR / "04_sm_anomalies"
+DAYS_BEFORE = 5                       # Day -5 to Day 0, as far back as the trajectories
 LAT_MIN_MAX = (config.MAP_EXTENT[2], config.MAP_EXTENT[3])
 LON_MIN_MAX = (config.MAP_EXTENT[0], config.MAP_EXTENT[1])
 
@@ -78,9 +78,6 @@ def load_ildas():
 
 
 def main():
-    p = base_parser("ILDAS soil moisture anomalies")
-    p.add_argument("--days-before", type=int, default=5, help="Days before Day 0 to include")
-    args = p.parse_args()
     import xarray as xr
 
     sm = load_ildas()
@@ -88,9 +85,9 @@ def main():
     if config.ILDAS_MASK_FILE:
         mask = xr.open_dataarray(config.ILDAS_MASK_FILE).squeeze(drop=True)
     config.ensure_dir(OUT_DIR)
-    for ev in selected_events(args):
+    for ev in config.EVENTS:
         d0 = pd.Timestamp(ev.day0)
-        start, end = (d0 - pd.Timedelta(days=args.days_before)).strftime("%Y-%m-%d"), ev.day0
+        start, end = (d0 - pd.Timedelta(days=DAYS_BEFORE)).strftime("%Y-%m-%d"), ev.day0
         print(f"Event {ev.number}: {ev.key} ({start} to {end})")
         anom = anomaly.daily_anomaly(sm, start, end, config.CLIM_START, config.CLIM_END).compute()
         if mask is not None:

@@ -125,16 +125,6 @@ EVENTS: list[Event] = [
         "Rampur", 19, 3),
 ]
 
-EVENTS_BY_KEY: dict[str, Event] = {e.key: e for e in EVENTS}
-
-
-def get_event(key_or_number: str | int) -> Event:
-    """Look up an event by key ("Leh_2010") or number (3)."""
-    if isinstance(key_or_number, int):
-        return EVENTS[key_or_number - 1]
-    return EVENTS_BY_KEY[key_or_number]
-
-
 def ensure_dir(path: Path) -> Path:
     """Create a directory if needed and return it."""
     path.mkdir(parents=True, exist_ok=True)
