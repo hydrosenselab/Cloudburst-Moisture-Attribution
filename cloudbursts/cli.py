@@ -1,7 +1,6 @@
 """
 cloudbursts.cli
 
-Small helpers shared by every script's command line.
 """
 
 from __future__ import annotations
