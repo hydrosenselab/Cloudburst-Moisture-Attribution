@@ -1,0 +1,18 @@
+# Event table used by 07_moisture_statistics.py.
+# native_peak_mm_h: highest native 0.1 deg IMERG hourly rate (01_imerg_native_peaks.py).
+# start_hour_utc: HYSPLIT start hour on Day 0 (Leh: 19 UTC, one hour after its native maximum).
+# daily_rainfall_mm: station total where reported (events 5, 7 and 9), otherwise the IMERG total for
+#   the IST day containing the start hour. p9990_mm, p9999_mm: district 99.90th and 99.99th
+#   percentiles of daily rainfall, 1991-2020 (Peringiyil & Saharia 2026). tier: 1 > p9999,
+#   2 between, 3 < p9990.
+event,key,site,native_peak_mm_h,start_hour_utc,daily_rainfall_mm,daily_source,p9990_mm,p9999_mm,tier
+1,Ukhimath_1998,Ukhimath,45.80,17,84.36,IMERG,84.45,202.02,3
+2,Shillagarh_2003,Shillagarh,20.80,20,72.29,IMERG,104.37,161.19,3
+3,Leh_2010,Leh,42.36,19,98.95,IMERG,17.68,43.20,1
+4,Kedarnath_2013,Kedarnath,31.04,15,253.22,IMERG,84.45,202.02,1
+5,Udhampur_2014,Udhampur,31.68,20,260.00,Kawa AWS,150.27,314.38,2
+6,Mandi_2015,Dharampur,33.27,1,203.59,IMERG,134.00,245.76,2
+7,Arakot_2019,Arakot,38.77,0,150.00,Sanail observatory,101.00,152.62,2
+8,Bhagsu_2021,Bhagsu,27.33,9,211.57,IMERG,184.02,292.32,2
+9,Dehradun_2022,Raipur,20.60,20,290.50,IMD AWS Raipur,143.20,226.66,1
+10,Shimla_2024,Rampur,35.74,19,71.64,IMERG,87.50,155.40,3

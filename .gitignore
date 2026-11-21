@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+outputs/
+
+# raw data (not shared in this repository)
+*.HDF5
+*.hdf5
+*.grib
+*.nc
+*tdump*
